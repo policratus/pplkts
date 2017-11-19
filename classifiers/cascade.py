@@ -10,15 +10,21 @@ class Classifiers:
     """
     Methods for image classification
     """
-    _haar_features_file = os.path.dirname(
+    _path = os.path.dirname(
         os.path.realpath(
             __file__
         )
-    ) + '/faces.xml'
+    )
+
+    _faces_haar = _path + '/faces.xml'
+    _eyes_haar = _path + '/eyes.xml'
+    _cat_haar = _path + '/cat.xml'
 
     @classmethod
     def __init__(cls):
-        cls._faces_haar_features = cv2.CascadeClassifier(cls._haar_features_file)
+        cls._faces_haar_features = cv2.CascadeClassifier(cls._faces_haar)
+        cls._eyes_haar_features = cv2.CascadeClassifier(cls._eyes_haar)
+        cls._cat_haar_features = cv2.CascadeClassifier(cls._cat_haar)
 
     @classmethod
     def _detect_face(cls, image):
@@ -27,9 +33,33 @@ class Classifiers:
         """
         faces = cls._faces_haar_features.detectMultiScale(
             image,
-            scaleFactor=2.5,
-            minNeighbors=5,
-            minSize=(30, 30),
+            scaleFactor=1.5,
+            minNeighbors=5
         )
 
         return faces
+
+    @classmethod
+    def _detect_eyes(cls, image):
+        """
+        Detect eyes on image using Haar cascades
+        """
+        eyes = cls._eyes_haar_features.detectMultiScale(
+            image,
+            scaleFactor=2.5,
+            minNeighbors=5
+        )
+
+        return eyes
+
+    @classmethod
+    def _detect_cat(cls, image):
+        """
+        Detect cats on image using Haar cascades
+        """
+        cat = cls._cat_haar_features.detectMultiScale(
+            image,
+            minSize=(80, 80)
+        )
+
+        return cat
